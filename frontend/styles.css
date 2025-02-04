@@ -223,3 +223,19 @@ nav ul li a:hover {
 .assign-btn:hover {
     background-color: #218838;
 }
+
+.assign-student-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: background 0.3s ease;
+    margin-top: 10px;
+}
+
+.assign-student-btn:hover {
+    background-color: #218838;
+}

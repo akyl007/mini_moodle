@@ -46,6 +46,16 @@
         <button class="assign-btn" onclick="assignTeacher()">Назначить</button>
     </div>
 </div>
+<div id="assignStudentModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeAssignStudentModal()">&times;</span>
+        <h2>Назначить студентов</h2>
+        <label for="studentSelect">Выберите студентов:</label>
+        <select id="studentSelect" multiple></select>
+        <button class="assign-btn" onclick="assignStudents()">Назначить</button>
+    </div>
+</div>
+
 
 <script src="main.js"></script>
 </body>

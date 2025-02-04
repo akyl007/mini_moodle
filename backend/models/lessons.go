@@ -11,3 +11,8 @@ type Teacher struct {
 	ID       int    `json:"id"`
 	Username string `json:"username"`
 }
+
+type Student struct {
+	ID       int    `json:"id"`
+	Username string `json:"username"`
+}

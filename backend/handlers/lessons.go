@@ -137,3 +137,27 @@ func GetLesson(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(lesson)
 }
+
+type AssignStudentsRequest struct {
+	LessonID   int   `json:"lesson_id"`
+	StudentIDs []int `json:"student_ids"`
+}
+
+func AssignStudents(w http.ResponseWriter, r *http.Request) {
+	var req AssignStudentsRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "Invalid request", http.StatusBadRequest)
+		return
+	}
+
+	for _, studentID := range req.StudentIDs {
+		_, err := db.DB.Exec("INSERT INTO lesson_students (lesson_id, student_id) VALUES ($1, $2)", req.LessonID, studentID)
+		if err != nil {
+			http.Error(w, "Ошибка назначения студента", http.StatusInternalServerError)
+			return
+		}
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{"message": "Students assigned successfully"})
+}

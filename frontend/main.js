@@ -37,9 +37,9 @@ function fetchLessons() {
                     <p>${lesson.description}</p>
                     <p><strong>Преподаватель:</strong> ${lesson.teacher_id === null ? "Не назначен" : "ID " + lesson.teacher_id}</p>
                     <button class="assign-teacher-btn" onclick="openAssignTeacherModal(event, ${lesson.id})">📘 Назначить преподавателя</button>
+                    <button class="assign-student-btn" onclick="openAssignStudentModal(event, ${lesson.id})">🎓 Назначить студентов</button>
                 `;
 
-                // Добавляем обработчик клика на сам урок
                 div.addEventListener("click", function() {
                     window.location.href = `lesson.html?id=${lesson.id}`;
                 });
@@ -49,6 +49,7 @@ function fetchLessons() {
         })
         .catch(error => console.error("Ошибка:", error));
 }
+
 
 
 function deleteLesson(id) {
@@ -98,7 +99,53 @@ function assignTeacher() {
         .then(response => response.json())
         .then(() => {
             closeAssignTeacherModal();
-            fetchLessons(); // Обновляем список уроков
+            fetchLessons();
         })
         .catch(error => console.error("Ошибка назначения преподавателя:", error));
 }
+
+function openAssignStudentModal(event, lessonId) {
+    event.stopPropagation(); // Останавливаем всплытие клика
+    selectedLessonId = lessonId;
+    const modal = document.getElementById("assignStudentModal");
+    modal.style.display = "block";
+
+    fetch("http://localhost:8080/api/students")
+        .then(response => response.json())
+        .then(students => {
+            const studentSelect = document.getElementById("studentSelect");
+            studentSelect.innerHTML = "";
+
+            students.forEach(student => {
+                const option = document.createElement("option");
+                option.value = student.id;
+                option.textContent = student.username;
+                studentSelect.appendChild(option);
+            });
+        })
+        .catch(error => console.error("Ошибка загрузки студентов:", error));
+}
+
+function closeAssignStudentModal() {
+    document.getElementById("assignStudentModal").style.display = "none";
+}
+
+function assignStudents() {
+    const selectedStudents = Array.from(document.getElementById("studentSelect").selectedOptions)
+        .map(option => parseInt(option.value));
+
+    fetch("http://localhost:8080/api/lesson/assign-students", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ lesson_id: selectedLessonId, student_ids: selectedStudents })
+    })
+        .then(response => response.json())
+        .then(() => {
+            closeAssignStudentModal();
+            fetchLessons(); // Обновляем список уроков
+        })
+        .catch(error => console.error("Ошибка назначения студентов:", error));
+}
+
